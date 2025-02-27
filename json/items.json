@@ -1,0 +1,38 @@
+{
+  "Weapons": {
+    "Knife": {
+      "Damage": 4,
+      "Range": 1,
+      "Stackable": false
+    },
+    "Crowbar": {
+      "Damage": 6,
+      "Range": 2,
+      "Stackable": false
+    }
+  },
+
+  
+  "Consumables": {
+    "Medkit": {
+      "HealthRestore": 50,
+      "HungerRestore": 0,
+      "Stackable": true
+    },
+    "Apple": {
+      "HealthRestore": 10,
+      "HungerRestore": 5,
+      "Stackable": true
+    }
+  },
+
+
+  "Resources": {
+    "Wood": {
+      "Stackable": true
+    },
+    "Stone": {
+      "Stackable": true
+    }
+  }
+}

@@ -3,27 +3,8 @@ from scripts.utils import load_image, normalize_vector
 from scripts import settings
 from scripts.items import Weapon
 from scripts.build_hud import BuildHUD
+from scripts.inventory import Inventory
 
-class Inventory:
-    def __init__(self, capacity):
-        self.capacity = capacity
-        self.items = []
-
-    def add_item(self, item):
-        if len(self.items) < self.capacity:
-            self.items.append(item)
-        else:
-            print("Inventory full!")
-
-    def remove_item(self, item):
-        self.items.remove(item)
-
-    def use_item(self, item):
-        if item in self.items:
-            # Handle item usage (e.g., consume food, equip weapon)
-            print(f"Used {item.name}")
-            self.remove_item(item)
-            
 class Player:
     def __init__(self, game):
         self.game = game
@@ -31,25 +12,39 @@ class Player:
         self.movement = [0, 0]
         self.player = load_image("player.png")
         self.player_rect = self.player.get_rect(center=(self.player.get_width() // 2, self.player.get_height() // 2))
+        
         self.pos_x = 0
         self.pos_y = 0
         
-        self.weapon = Weapon("Sword", 10, 50, 1.0)  # Temp
-        self.attack_cooldown = 0
+        self.inventory = Inventory()
+        self.equipped_weapon = None
         
-        self.inventory = Inventory(capacity=10)  # Temp
+        self.health = 100
+        self.hunger = 100
         
-        self.build_hud = BuildHUD(game) #
+        self.build_hud = BuildHUD(game) 
         self.build_mode = False
 
+        
+    def equip_weapon(self, weapon):
+        if isinstance(weapon, Weapon):
+            self.equipped_weapon = weapon
+            print(f"Equipped {weapon.name}")
+        else:
+            print("Cannot equip this item.")
 
+    def take_damage(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            print("Player has died.")
+            
     def render(self):
         """Render the player on the screen."""
         self.game.screen.blit(self.player, self.player_rect)
 
     def update(self):
         """Update player position and handle collisions."""
-        self.collisions()
+        self.collisions_with_structures()
         self.move()
 
     def events(self, event):
@@ -78,7 +73,7 @@ class Player:
           elif event.key in (settings.MOVEMENT_KEYS["left"], settings.MOVEMENT_KEYS["right"]):
               self.movement[0] = 0
               
-    def collisions(self):
+    def collisions_with_structures(self):
         """Check and resolve collisions with walls."""
         player_half_width = self.player_rect.width // 2
         player_half_height = self.player_rect.height // 2
@@ -98,10 +93,10 @@ class Player:
         )
 
         # Check for collisions with walls
-        self.check_collision(future_rect_x, "x")
-        self.check_collision(future_rect_y, "y")
+        self.check_collision_with_structures(future_rect_x, "x")
+        self.check_collision_with_structures(future_rect_y, "y")
 
-    def check_collision(self, future_rect, axis):
+    def check_collision_with_structures(self, future_rect, axis):
         """Check for collisions with walls on a specific axis."""
         for x in range(self.game.world.grid_length_x):
             for y in range(self.game.world.grid_length_y):
@@ -111,9 +106,9 @@ class Player:
                         settings.TILE_SIZE, settings.TILE_SIZE
                     )
                     if future_rect.colliderect(wall_rect):
-                        self.resolve_collision(axis, wall_rect)
+                        self.resolve_collision_with_structures(axis, wall_rect)
 
-    def resolve_collision(self, axis, wall_rect):
+    def resolve_collision_with_structures(self, axis, wall_rect):
         """Resolve collision on a specific axis."""
         if axis == "x":
             if self.movement[0] > 0:  # Moving right
@@ -154,6 +149,7 @@ class Player:
     
     def toggle_build_mode(self):
         self.build_mode = not self.build_mode
+   
     # Pick up items on collision   
     # def check_item_pickup(self):
     #   for item in self.game.items:
