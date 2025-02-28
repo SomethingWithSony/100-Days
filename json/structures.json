@@ -1,0 +1,18 @@
+{
+  "Structures": {
+    "WoodWall": {
+      "Material": "Wood",
+      "Durability": 100,
+      "IsFlameable": true,
+      "ConstructionCost": 50
+    },
+    "StoneWall": {
+      "Material": "Stone",
+      "Durability": 200,
+      "IsFlameable": false,
+      "ConstructionCost": 50
+    }
+  },
+  "Objects":{}
+
+}

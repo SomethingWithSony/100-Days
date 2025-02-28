@@ -32,17 +32,6 @@ class World:
             "structure": "",
         }
 
-    def render(self):
-        """Render the world."""
-        for x in range(self.grid_length_x):
-            for y in range(self.grid_length_y):
-                square = self.world[x][y]["rect"]
-                if structure := self.world[x][y]["structure"]:
-                    self.game.screen.blit(self.structure_images[structure], square[0])
-                elif self.is_inside_rect(square):
-                    pygame.draw.rect(self.game.screen, settings.WHITE, pygame.Rect(square[0][0], square[0][1], settings.TILE_SIZE, settings.TILE_SIZE), 1)
-                    self.game.current_square = [x, y]
-
     def is_inside_rect(self, rect):
         """Check if the mouse is inside a rectangle."""
         offset = 1

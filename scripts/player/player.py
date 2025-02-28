@@ -1,17 +1,17 @@
 import pygame
 from scripts.utils import load_image, normalize_vector
 from scripts import settings
-from scripts.items import Weapon
-from scripts.build_hud import BuildHUD
-from scripts.inventory import Inventory
+from scripts.items.items import Weapon
+from scripts.player.build_hud import BuildHUD
+from scripts.player.inventory import Inventory
 
 class Player:
     def __init__(self, game):
         self.game = game
         self.move_speed = settings.PLAYER_SPEED
         self.movement = [0, 0]
-        self.player = load_image("player.png")
-        self.player_rect = self.player.get_rect(center=(self.player.get_width() // 2, self.player.get_height() // 2))
+        self.image = load_image("player.png")
+        self.player_rect = self.image.get_rect(center=(self.image.get_width() // 2, self.image.get_height() // 2))
         
         self.pos_x = 0
         self.pos_y = 0
@@ -38,13 +38,10 @@ class Player:
         if self.health <= 0:
             print("Player has died.")
             
-    def render(self):
-        """Render the player on the screen."""
-        self.game.screen.blit(self.player, self.player_rect)
+    
 
     def update(self):
-        """Update player position and handle collisions."""
-        self.collisions_with_structures()
+        """Update player position."""
         self.move()
 
     def events(self, event):
@@ -72,56 +69,6 @@ class Player:
               self.movement[1] = 0
           elif event.key in (settings.MOVEMENT_KEYS["left"], settings.MOVEMENT_KEYS["right"]):
               self.movement[0] = 0
-              
-    def collisions_with_structures(self):
-        """Check and resolve collisions with walls."""
-        player_half_width = self.player_rect.width // 2
-        player_half_height = self.player_rect.height // 2
-
-        # Future positions
-        next_x = self.pos_x + self.movement[0] * self.move_speed
-        next_y = self.pos_y + self.movement[1] * self.move_speed
-
-        # Create future rects for X and Y movement
-        future_rect_x = pygame.Rect(
-            next_x - player_half_width, self.pos_y - player_half_height,
-            self.player_rect.width, self.player_rect.height
-        )
-        future_rect_y = pygame.Rect(
-            self.pos_x - player_half_width, next_y - player_half_height,
-            self.player_rect.width, self.player_rect.height
-        )
-
-        # Check for collisions with walls
-        self.check_collision_with_structures(future_rect_x, "x")
-        self.check_collision_with_structures(future_rect_y, "y")
-
-    def check_collision_with_structures(self, future_rect, axis):
-        """Check for collisions with walls on a specific axis."""
-        for x in range(self.game.world.grid_length_x):
-            for y in range(self.game.world.grid_length_y):
-                if self.game.world.world[x][y]["structure"] == "wall":
-                    wall_rect = pygame.Rect(
-                        x * settings.TILE_SIZE, y * settings.TILE_SIZE,
-                        settings.TILE_SIZE, settings.TILE_SIZE
-                    )
-                    if future_rect.colliderect(wall_rect):
-                        self.resolve_collision_with_structures(axis, wall_rect)
-
-    def resolve_collision_with_structures(self, axis, wall_rect):
-        """Resolve collision on a specific axis."""
-        if axis == "x":
-            if self.movement[0] > 0:  # Moving right
-                self.pos_x = wall_rect.left - self.player_rect.width // 2
-            elif self.movement[0] < 0:  # Moving left
-                self.pos_x = wall_rect.right + self.player_rect.width // 2
-            self.movement[0] = 0
-        elif axis == "y":
-            if self.movement[1] > 0:  # Moving down
-                self.pos_y = wall_rect.top - self.player_rect.height // 2
-            elif self.movement[1] < 0:  # Moving up
-                self.pos_y = wall_rect.bottom + self.player_rect.height // 2
-            self.movement[1] = 0
 
     def move(self):
         """Move the player based on input."""

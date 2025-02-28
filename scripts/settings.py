@@ -8,6 +8,7 @@ FPS = 60
 
 # Movement
 PLAYER_SPEED = 2
+
 MOVEMENT_KEYS = {
     "up": pygame.K_w,
     "down": pygame.K_s,

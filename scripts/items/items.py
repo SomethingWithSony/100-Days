@@ -1,4 +1,5 @@
 from scripts.utils import load_image
+
 import pygame
 
 class Item:
@@ -15,20 +16,20 @@ class Item:
         
         self.player = player
         
-    # Render?
-    def render(self):
-      # if not in inventory render 
-      pass
+    # # Render?
+    # def render(self):
+    #   # if not in inventory render 
+    #   pass
     
-    def update(self):
-      if self.check_colision(self.player, self.item):
-        # Show press to pickup to player
-        pass
+    # def update(self):
+    #   if self.check_colision(self.player, self.item):
+    #     # Show press to pickup to player
+    #     pass
       
-    def check_collision(player, item):
-      player_rect = pygame.Rect(player.pos_x, player.pos_y, player.width, player.height) 
-      item_rect = pygame.Rect(item.pos_x, item.pos_y, item.image.get_width(), item.image.get_height())
-      return player_rect.colliderect(item_rect)
+    # def check_collision(player, item):
+    #   player_rect = pygame.Rect(player.pos_x, player.pos_y, player.width, player.height) 
+    #   item_rect = pygame.Rect(item.pos_x, item.pos_y, item.image.get_width(), item.image.get_height())
+    #   return player_rect.colliderect(item_rect)
     
     # Update?
       # Check if coliding with the player?    

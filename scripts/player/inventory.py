@@ -1,4 +1,4 @@
-from scripts.items import *
+from scripts.items.items import *
 
 class Inventory:
     def __init__(self, capacity=10):

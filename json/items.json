@@ -3,12 +3,20 @@
     "Knife": {
       "Damage": 4,
       "Range": 1,
-      "Stackable": false
+      "Stackable": false,
+      "Recipe" : {
+        "Wood" : 10,
+        "Iron" : 30
+      }
     },
     "Crowbar": {
       "Damage": 6,
       "Range": 2,
-      "Stackable": false
+      "Stackable": false,
+      "Recipe" : {
+        "Wood" : 10,
+        "Iron" : 30
+      }
     }
   },
 
