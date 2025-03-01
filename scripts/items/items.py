@@ -1,47 +1,27 @@
 from scripts.utils import load_image
-
-import pygame
+from   scripts.systems.data_loader import ITEM_DATA
 
 class Item:
-    def __init__(self, name, player, quantity=1, stackable=True, is_dropped=True, pos=(0,0) ):
+    def __init__(self,player, name,  quantity=1, stackable=True, is_in_inventory=False, pos=(0,0)):
+        self.player = player
+        
         self.name = name
         self.quantity = quantity
         self.stackable = stackable  # Whether the item can stack in the inventory
         
-        self.is_dropped = is_dropped
+        self.is_in_inventory = is_in_inventory
         self.pos_x = pos[0]
         self.pos_y = pos[1]
         
-        self.image = load_image("items/" + name + ".png")
-        
-        self.player = player
-        
-    # # Render?
-    # def render(self):
-    #   # if not in inventory render 
-    #   pass
-    
-    # def update(self):
-    #   if self.check_colision(self.player, self.item):
-    #     # Show press to pickup to player
-    #     pass
-      
-    # def check_collision(player, item):
-    #   player_rect = pygame.Rect(player.pos_x, player.pos_y, player.width, player.height) 
-    #   item_rect = pygame.Rect(item.pos_x, item.pos_y, item.image.get_width(), item.image.get_height())
-    #   return player_rect.colliderect(item_rect)
-    
-    # Update?
-      # Check if coliding with the player?    
-      
-     
+        # self.image = load_image("items/" + name + ".png")
+        self.image = load_image("wall.png")
 
     def __repr__(self):
         return f"{self.name} (x{self.quantity})" if self.stackable else self.name
       
 class Weapon(Item):
-    def __init__(self, name, damage, range, attack_speed):
-        super().__init__(name, quantity=1, stackable=False)  # Weapons are not stackable
+    def __init__(self,player, name, damage, range, attack_speed, quantity=1, pos=(0, 0)):
+        super().__init__(player, name, quantity=quantity, stackable=False, pos=pos)  # Weapons are not stackable
         self.damage = damage
         self.range = range
         self.attack_speed = attack_speed
@@ -67,3 +47,38 @@ class Resource(Item):
         super().__init__(name, quantity, stackable=True)
  
         
+# Auc Functions
+def create_item(player, item_type, item_name, quantity=1, pos=(0, 0)):
+    # Get item data from the JSON file
+    item_info = ITEM_DATA[item_type][item_name]
+    
+    # Create the appropriate item object
+    if item_type == "Weapons":
+        return Weapon(
+            player=player,
+            name=item_name,
+            damage=item_info["Damage"],
+            range=item_info["Range"],
+            attack_speed=1.0,  # Put in json file
+            quantity=quantity,
+            pos=pos
+        )
+    elif item_type == "Consumables":
+        return Consumable(
+            name=item_name,
+            quantity=quantity,
+            health_restore=item_info["HealthRestore"],
+            hunger_restore=item_info["HungerRestore"],
+            pos=pos
+        )
+    elif item_type == "Resources":
+        return Resource(
+            name=item_name,
+            quantity=quantity,
+            pos=pos
+        )
+    else:
+        raise ValueError(f"Unknown item type: {item_type}")
+    
+
+

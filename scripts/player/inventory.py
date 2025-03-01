@@ -1,9 +1,10 @@
 from scripts.items.items import *
 
 class Inventory:
-    def __init__(self, capacity=10):
+    def __init__(self,capacity=10):
         self.capacity = capacity
         self.items = []
+
 
     def add_item(self, item):
         # Check if the item is stackable and already exists in the inventory
@@ -18,10 +19,14 @@ class Inventory:
         else:
             print("Inventory is full!")
 
-    def remove_item(self, item):
-        if item in self.items:
-            self.items.remove(item)
-
+    # def drop_item(self, item):
+    #     if item in self.items:
+    #         # drop item at last known location
+            
+    #         self.items.remove(item)
+            
+    #         # self.game.items.append(item)
+            
     def use_item(self, item, player):
         if isinstance(item, Consumable):
             item.use(player)

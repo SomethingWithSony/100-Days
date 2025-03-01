@@ -24,6 +24,8 @@ class Player:
         
         self.build_hud = BuildHUD(game) 
         self.build_mode = False
+        
+        self.hovering_item = None
 
         
     def equip_weapon(self, weapon):
@@ -38,8 +40,6 @@ class Player:
         if self.health <= 0:
             print("Player has died.")
             
-    
-
     def update(self):
         """Update player position."""
         self.move()
@@ -51,17 +51,31 @@ class Player:
             self.build_hud.events(event)
             
       if event.type == pygame.KEYDOWN:
-          if event.key == settings.MOVEMENT_KEYS["up"]:
-              self.movement[1] = -1
-          elif event.key == settings.MOVEMENT_KEYS["down"]:
-              self.movement[1] = 1
-          elif event.key == settings.MOVEMENT_KEYS["left"]:
-              self.movement[0] = -1
-          elif event.key == settings.MOVEMENT_KEYS["right"]:
-              self.movement[0] = 1
+            if event.key == settings.MOVEMENT_KEYS["up"]:
+                self.movement[1] = -1
+            elif event.key == settings.MOVEMENT_KEYS["down"]:
+                self.movement[1] = 1
+            elif event.key == settings.MOVEMENT_KEYS["left"]:
+                self.movement[0] = -1
+            elif event.key == settings.MOVEMENT_KEYS["right"]:
+                self.movement[0] = 1
               
-          if event.key == pygame.K_b:
-                self.toggle_build_mode()
+            if event.key == pygame.K_b:
+                  self.toggle_build_mode()
+                  
+            if event.key == pygame.K_f:
+                if self.hovering_item != None:
+                    self.pickup_item(self.hovering_item)
+                    self.hovering_item = None
+            
+            if event.key == pygame.K_q:
+                # self.drop_selected_item(self.inventory.items[0])
+                pass
+            
+            if event.key == pygame.K_i:
+                  print("The player inventory contains the following items")
+                  print(self.inventory)
+                    
         
               
       if event.type == pygame.KEYUP:
@@ -97,10 +111,13 @@ class Player:
     def toggle_build_mode(self):
         self.build_mode = not self.build_mode
    
-    # Pick up items on collision   
-    # def check_item_pickup(self):
-    #   for item in self.game.items:
-    #       if distance(self.pos_x, self.pos_y, item.pos_x, item.pos_y) < settings.TILE_SIZE:
-    #           self.inventory.add_item(item)
-    #           self.game.items.remove(item)
+    def drop_selected_item(self,item):
+        # self.inventory.drop_item(item)
+        pass
+    
+    #Pick up items 
+    def pickup_item(self,item):
+        self.inventory.add_item(item)
+        self.game.items.remove(item)
+        print("Item collected")
       

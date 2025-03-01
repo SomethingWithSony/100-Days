@@ -2,6 +2,8 @@ import pygame
 from scripts import settings
 
 class Physics:
+    
+    
     def check_collision(self, obj1, obj2):
         """Check for collision between two objects."""
         rect1 = pygame.Rect(obj1.pos_x, obj1.pos_y, obj1.width, obj1.height)
@@ -11,6 +13,13 @@ class Physics:
         return rect1.colliderect(rect2) 
     
     # Player collisions 
+    def check_collision_player_item(self, player, obj2):
+        rect1 = pygame.Rect(player.pos_x, player.pos_y, player.image.get_width(), player.image.get_height())
+        rect2 = pygame.Rect(obj2.pos_x, obj2.pos_y, obj2.image.get_width(), obj2.image.get_height())
+        
+        # Area for hover 
+        return rect1.colliderect(rect2) 
+    
     def player_collisions_with_structures(self,player):
         """Check and resolve collisions with walls."""
         player_half_width = player.player_rect.width // 2
